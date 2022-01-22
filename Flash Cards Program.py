@@ -1,17 +1,127 @@
 # Flash Cards Program
-from tkinter.ttk import *
 import random
 import time
 from tkinter import *
+from functools import partial, partialmethod
 
-app = Tk()
+# Sets up window
+root = Tk()
+root.geometry('800x500')
+root.title('Flashcards - Made by SlyFryFrog')
 
-app.title("Flashcards - Made by SlyFryFrog")
-app.geometry("800x400")
-test = Label(app, text= "Testing")
-test.grid(row=8, column=8)
+main_frame = Frame(root)
+main_frame.pack(side='top', expand=True, fill='both')
 
+reverse_text = Label(text="Reversed (False)")
+reverse_text.place(relx=.1, rely=.05, anchor='center')
+
+# Changes current menu to new menu
+def change_screen(method, master):
+    for widget in master.winfo_children():
+        widget.grid_forget()
+        widget.destroy()
+    method(master)
+
+# Sets screen to main menu
+def main_menu(frame):
+    Label(frame, text="Main Menu", font=20).place(relx=.5, rely=.05, anchor='center')
+
+    settings_button = Button(frame, text="Settings", command=partial(change_screen, settings_menu, frame))
+    settings_button.place(relx=.95, rely=.05, anchor='center')
+
+    start_button = Button(frame, text='START', command=partial(change_screen, flashcards, frame))
+
+    start_button.place(relx=.5, rely=.5, anchor='center')
+
+# sets screen to settings menu
+def settings_menu(frame):
+    Label(frame, text="Settings", font=20).place(relx=.5, rely=.05, anchor='center')
+
+    reverse_button = Button(frame, text="Reversed flashcards",command=lambda: reversed_setting(reverse_text))
+    reverse_button.place(relx=.4, rely=.2, anchor='center')
+
+    home_button = Button(frame, text="Main Menu", command=partial(change_screen, main_menu, frame))
+    home_button.place(relx=.95, rely=.05, anchor='center')
+
+# Enables/disables the reversed setting option
+def reversed_setting(reverse_text):
+    global reversed_flashcards
+    reverse_text.destroy()
+    if reversed_flashcards == True:
+        reversed_flashcards = False
+        reverse_text = Label(text="Reversed (False)")
+        reverse_text.place(relx=.1, rely=.05, anchor='center')
+    else:
+        reversed_flashcards = True
+        reverse_text = Label(text="Reversed (True)")
+        reverse_text.place(relx=.1, rely=.05, anchor='center')
+
+# Creates flashcards
+def flashcards(frame):
+    global reversed_flashcards
+    global dictionary
+    global get_new_token
+    get_new_token = True
+
+    # Launches the function that creates the flashcards
+    Label(frame, text='Flashcard Practice').place(relx=.5, rely=.1, anchor='center')
+
+
+    # Generates a random set of items from dictionary
+    
+    cards(frame)
+
+def cards(frame):
+    global get_new_token
+
+    # Launches exit_function which clears frame and widgets and builds the main menu frame
+    exit_button = Button(frame, text='Exit', command=lambda: exit_function(frame))
+    exit_button.place(relx=.9, rely=.9, anchor='center')
+    
+    answer_textbox = Entry(frame, text='')
+    answer_textbox.place(relx=.5, rely=.8, anchor='center')
+
+    # Checks flashcard token
+    if get_new_token == True:
+        if reversed_flashcards == True:
+            temp = random.choice(list(dictionary.items()))
+            current_pair = {1 : temp[0], 0 : temp[1]}
+
+        else:
+            current_pair = random.choice(list(dictionary.items()))
+
+        get_new_token = False
+
+    # Displays what it wants the user to translate
+    translate_this_text = Label(text=f'Translate "{current_pair[1]}"')
+    translate_this_text.place(relx=.5, rely=.5, anchor='center')
+
+    # Checks user input to see if it matches the meaning of the flashcard or not
+    def sumbit_answer(answer_textbox):
+        global get_new_token
+
+        user_input = answer_textbox.get()
+
+        if user_input == current_pair[0]:
+            translate_this_text.destroy()
+
+            get_new_token = True
+            cards(frame)
+                    
+        else:
+            get_new_token = False
+    # Launches functions to check if submition is correct
+    submit_button = Button(frame, text='Submit', command= lambda: sumbit_answer(answer_textbox))
+    submit_button.place(relx=.5, rely=.9, anchor='center')
+
+    # Destroys old frame and widgets and launches other function to create new main menu frame
+    def exit_function(frame):
+        change_screen(main_menu, frame)
+        translate_this_text.destroy()
+
+# Builds dictionary
 def build_dict():
+    global dictionary
     dictionary = {}
 
     # Builds a dictionary from text file and sets everything to lowercase
@@ -21,37 +131,12 @@ def build_dict():
             dictionary[key] = val.strip("\n")
 
     dictionary =  {key.lower(): val.lower() for key, val in dictionary.items()}
-    return dictionary
 
-def flashcard(dictionary):
-    reversed_flashcards = input('Do you want your cards given in reverse? (y/n): ')
-    reversed_flashcards = reversed_flashcards.lower() == "y"
-    get_new_token = True
-    while True:
-        # Generates a random set of items from dictionary
-        if get_new_token == True:
-            if reversed_flashcards == True:
-                temp = random.choice(list(dictionary.items()))
-                current_pair = {1 : temp[0], 0 : temp[1]}
-            else:
-                current_pair = random.choice(list(dictionary.items()))
-            get_new_token = False
+# Launches starting functions and sets global variables
+build_dict()
+main_menu(main_frame)
 
-        # Displays current_pair and waits for user's input
-        print(f'Translate "{current_pair[1]}"')
-        user_input = input("Answer here: ").lower()
-        if user_input == current_pair[0]:
-            print("Correct!\n")
-            get_new_token = True
-        elif user_input == "exit":
-            break
+global reversed_flashcards
+reversed_flashcards = False 
 
-        else:
-            print("Please try again.\n")
-            get_new_token = False
-        
-def main():
-    dictionary = build_dict()
-    flashcard(dictionary)
-main()
-app.mainloop()
+root.mainloop()
