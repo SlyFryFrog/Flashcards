@@ -13,7 +13,7 @@ main_frame = Frame(root)
 main_frame.pack(side='top', expand=True, fill='both')
 
 reverse_text = Label(text="Reversed (False)")
-reverse_text.place(relx=.1, rely=.05, anchor='center')
+reverse_text.place(relx=.075, rely=.05, anchor='center')
 
 # Changes current menu to new menu
 def change_screen(method, master):
@@ -49,18 +49,21 @@ def reversed_setting(reverse_text):
     reverse_text.destroy()
     if reversed_flashcards == True:
         reversed_flashcards = False
+        
         reverse_text = Label(text="Reversed (False)")
-        reverse_text.place(relx=.1, rely=.05, anchor='center')
+        reverse_text.place(relx=.075, rely=.05, anchor='center')
     else:
         reversed_flashcards = True
+
         reverse_text = Label(text="Reversed (True)")
-        reverse_text.place(relx=.1, rely=.05, anchor='center')
+        reverse_text.place(relx=.075, rely=.05, anchor='center')
 
 # Creates flashcards
 def flashcards(frame):
     global reversed_flashcards
     global dictionary
     global get_new_token
+
     get_new_token = True
 
     # Launches the function that creates the flashcards
