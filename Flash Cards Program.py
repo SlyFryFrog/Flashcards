@@ -1,4 +1,5 @@
 # Flash Cards Program
+from distutils import text_file
 import random
 import time
 from tkinter import *
@@ -7,10 +8,12 @@ from functools import partial, partialmethod
 # Sets up window
 root = Tk()
 root.geometry('800x500')
-root.title('Flashcards - Made by SlyFryFrog')
+root.title('Flashcards (Alpha) - Made by SlyFryFrog')
 
+# Sets var main_frame defaults
 main_frame = Frame(root)
 main_frame.pack(side='top', expand=True, fill='both')
+main_frame['bg'] = '#009dc4'
 
 reverse_text = Label(text="Reversed (False)")
 reverse_text.place(relx=.075, rely=.05, anchor='center')
@@ -29,7 +32,7 @@ def main_menu(frame):
     settings_button = Button(frame, text="Settings", command=partial(change_screen, settings_menu, frame))
     settings_button.place(relx=.95, rely=.05, anchor='center')
 
-    start_button = Button(frame, text='START', command=partial(change_screen, flashcards, frame))
+    start_button = Button(frame, text='START', command=partial(change_screen, pick_screen, frame))
     start_button.place(relx=.5, rely=.5, anchor='center')
 
 # sets screen to settings menu
@@ -37,7 +40,7 @@ def settings_menu(frame):
     Label(frame, text="Settings", font=20).place(relx=.5, rely=.05, anchor='center')
 
     reverse_button = Button(frame, text="Reversed flashcards",command=lambda: reversed_setting(reverse_text))
-    reverse_button.place(relx=.4, rely=.2, anchor='center')
+    reverse_button.place(relx=.5, rely=.2, anchor='center')
 
     home_button = Button(frame, text="Main Menu", command=partial(change_screen, main_menu, frame))
     home_button.place(relx=.95, rely=.05, anchor='center')
@@ -67,10 +70,8 @@ def flashcards(frame):
 
     # Launches the function that creates the flashcards
     Label(frame, text='Flashcard Practice').place(relx=.5, rely=.1, anchor='center')
-
-
-    # Generates a random set of items from dictionary
     
+    # Generates a random set of items from dictionary
     cards(frame)
 
 def cards(frame):
@@ -93,7 +94,6 @@ def cards(frame):
             current_pair = random.choice(list(dictionary.items()))
 
         get_new_token = False
-
     # Displays what it wants the user to translate
     translate_this_text = Label(text=f'Translate "{current_pair[1]}"')
     translate_this_text.place(relx=.5, rely=.5, anchor='center')
@@ -121,24 +121,43 @@ def cards(frame):
         change_screen(main_menu, frame)
         translate_this_text.destroy()
 
+def pick_screen(frame):
+    def destroy():
+        build_dict()
+        return change_screen(flashcards, frame)
+
+    def verbs():
+        global text_file
+        text_file = 'verbs.txt'
+        return destroy()
+
+    verbs_button = Button(frame, text='Verbs', command=verbs)
+    verbs_button.place(relx=.5, rely=.5, anchor='center')
+
+    def nouns():
+        global text_file
+        text_file = 'nouns.txt'
+        return destroy()
+    
+    nouns_button = Button(frame, text='Nouns', command=nouns)
+    nouns_button.place(relx=.3, rely=.5, anchor='center')
+
 # Builds dictionary
 def build_dict():
     global dictionary
+    global text_file
     dictionary = {}
 
     # Builds a dictionary from text file and sets everything to lowercase
-    with open("verbs.txt", encoding='utf-8') as f:
-        for line in f:
+    with open(text_file, encoding='utf-8') as file:
+        for line in file:
             key, val = line.split("; ")
             dictionary[key] = val.strip("\n")
 
     dictionary =  {key.lower(): val.lower() for key, val in dictionary.items()}
 
 # Launches starting functions and sets global variables
-build_dict()
 main_menu(main_frame)
-
 global reversed_flashcards
 reversed_flashcards = False 
-
 root.mainloop()

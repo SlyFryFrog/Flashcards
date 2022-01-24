@@ -7,4 +7,3 @@ andar; to walk
 apagar; to turn off
 borrar; to erase
 reír; to laugh
-vivir; to live
