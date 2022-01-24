@@ -30,7 +30,6 @@ def main_menu(frame):
     settings_button.place(relx=.95, rely=.05, anchor='center')
 
     start_button = Button(frame, text='START', command=partial(change_screen, flashcards, frame))
-
     start_button.place(relx=.5, rely=.5, anchor='center')
 
 # sets screen to settings menu
