@@ -1,5 +1,4 @@
 # Flash Cards Program
-from distutils import text_file
 import random
 import time
 from tkinter import *
@@ -99,7 +98,7 @@ def cards(frame):
     translate_this_text.place(relx=.5, rely=.5, anchor='center')
 
     # Checks user input to see if it matches the meaning of the flashcard or not
-    def sumbit_answer(answer_textbox):
+    def submit_answer(answer_textbox):
         global get_new_token
 
         user_input = answer_textbox.get()
@@ -113,8 +112,11 @@ def cards(frame):
         else:
             get_new_token = False
     # Launches functions to check if submition is correct
-    submit_button = Button(frame, text='Submit', command= lambda: sumbit_answer(answer_textbox))
+    submit_button = Button(frame, text='Submit', command= lambda: submit_answer(answer_textbox))
     submit_button.place(relx=.5, rely=.9, anchor='center')
+
+    # Binds the enter key
+    root.bind('<Return>', lambda event: submit_answer(answer_textbox))
 
     # Destroys old frame and widgets and launches other function to create new main menu frame
     def exit_function(frame):
@@ -158,6 +160,8 @@ def build_dict():
 
 # Launches starting functions and sets global variables
 main_menu(main_frame)
+
 global reversed_flashcards
 reversed_flashcards = False 
+
 root.mainloop()
