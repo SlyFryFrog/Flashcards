@@ -71,17 +71,16 @@ def flashcards(frame):
     Label(frame, text='Flashcard Practice').place(relx=.5, rely=.1, anchor='center')
     
     # Generates a random set of items from dictionary
-    cards(frame)
+    answer_textbox = Entry(frame, text='')
+    answer_textbox.place(relx=.5, rely=.8, anchor='center')
+    cards(frame, answer_textbox)
 
-def cards(frame):
+def cards(frame,answer_textbox):
     global get_new_token
 
     # Launches exit_function which clears frame and widgets and builds the main menu frame
     exit_button = Button(frame, text='Exit', command=lambda: exit_function(frame))
     exit_button.place(relx=.9, rely=.9, anchor='center')
-    
-    answer_textbox = Entry(frame, text='')
-    answer_textbox.place(relx=.5, rely=.8, anchor='center')
 
     # Checks flashcard token
     if get_new_token == True:
@@ -107,7 +106,8 @@ def cards(frame):
             translate_this_text.destroy()
 
             get_new_token = True
-            cards(frame)
+            answer_textbox.delete(0, END)
+            cards(frame, answer_textbox)
                     
         else:
             get_new_token = False
