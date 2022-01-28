@@ -26,9 +26,9 @@ def change_screen(method, master):
 
 # Sets screen to main menu
 def main_menu(frame):
-    Label(frame, text="Main Menu", font=20).place(relx=.5, rely=.05, anchor='center')
+    Label(frame, text='Main Menu', font=20).place(relx=.5, rely=.05, anchor='center')
 
-    settings_button = Button(frame, text="Settings", command=partial(change_screen, settings_menu, frame))
+    settings_button = Button(frame, text='Settings', command=partial(change_screen, settings_menu, frame))
     settings_button.place(relx=.95, rely=.05, anchor='center')
 
     start_button = Button(frame, text='START', command=partial(change_screen, pick_screen, frame))
@@ -36,12 +36,12 @@ def main_menu(frame):
 
 # sets screen to settings menu
 def settings_menu(frame):
-    Label(frame, text="Settings", font=20).place(relx=.5, rely=.05, anchor='center')
+    Label(frame, text='Settings', font=20).place(relx=.5, rely=.05, anchor='center')
 
-    reverse_button = Button(frame, text="Reversed flashcards",command=lambda: reversed_setting(reverse_text))
+    reverse_button = Button(frame, text='eversed flashcards', command=lambda: reversed_setting(reverse_text))
     reverse_button.place(relx=.5, rely=.2, anchor='center')
 
-    home_button = Button(frame, text="Main Menu", command=partial(change_screen, main_menu, frame))
+    home_button = Button(frame, text='Main Menu', command=partial(change_screen, main_menu, frame))
     home_button.place(relx=.95, rely=.05, anchor='center')
 
 # Enables/disables the reversed setting option
@@ -124,6 +124,8 @@ def cards(frame,answer_textbox):
         translate_this_text.destroy()
 
 def pick_screen(frame):
+    Label(frame, text='Choose what you would like to review.').place(relx=.5, rely=.1, anchor='center')
+
     def destroy():
         build_dict()
         return change_screen(flashcards, frame)
