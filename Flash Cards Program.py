@@ -104,9 +104,9 @@ def cards(frame,answer_textbox):
 
         if user_input == current_pair[0]:
             translate_this_text.destroy()
-
             get_new_token = True
             answer_textbox.delete(0, END)
+            
             cards(frame, answer_textbox)
                     
         else:
